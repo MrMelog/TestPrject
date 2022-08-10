@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Printers;
+using RendObj;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using RendObj;
 
 
 
@@ -10,16 +11,16 @@ namespace Render_Prj
 
     class ProgStart
     {
-        static void Main(string[] args)
+        static void Prog()
         {
             IPrinter EzPrint = new EasyPrinter();
             IPrinter Print = new Printer();
-            List<RenderObj> PickFi = new List<RenderObj>(); 
+            List<FileObj> PickFi = new List<FileObj>();
 
             Console.WriteLine(@"Enter the Path(like: C:\Users\tomfitz )");
             DirectoryInfo direct;
             FileInfo[] dirF;
-            while (true) 
+            while (true)
             {
                 try
                 {
@@ -35,15 +36,18 @@ namespace Render_Prj
             }
             if (dirF.Length > 0)
             {
-                List<RenderObj> Files = new List<RenderObj>();
+                List<FileObj> Files = new List<FileObj>();
                 foreach (var fi in dirF)
                 {
-                    Files.Add(new RenderObj(fi));
+                    if (fi.Extension.ToLower() == ".png" | fi.Extension == ".jpg")
+                        Files.Add(new RenderObj(fi));
+                    else
+                        Files.Add(new OtherObj(fi));
                 }
                 EzPrint.Print(Files);
                 Console.WriteLine("Enter the number of files. If u want close choise files enter 'end' ");
-                string try_i = "";
-                int num = -1;
+                string try_i;
+                int num;
                 while (true)
                 {
                     try_i = Console.ReadLine();
@@ -53,14 +57,28 @@ namespace Render_Prj
                     {
                         Console.WriteLine("Pls try again.");
                         try_i = Console.ReadLine();
-                        
+
                     }
-                    PickFi.Add(Files[num]);   
+                    PickFi.Add(Files[num]);
                 }
                 Print.Print(PickFi);
             }
 
             Console.ReadLine();
         }
+
+
+
+        static void Main()
+        {
+            while (true)
+            {
+                Prog();
+            }
+        }
+
+
+
+
     }
 }
